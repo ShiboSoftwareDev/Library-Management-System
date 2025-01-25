@@ -11,11 +11,9 @@ public class FileHandler {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts[0].equals("BOOK")) {
-                    items.add(new Book(parts[1], parts[2], parts[3], 
-                             Integer.parseInt(parts[4]), Double.parseDouble(parts[5])));
+                    items.add(new Book(parts[1], parts[2], parts[3], Integer.parseInt(parts[4])));
                 } else if (parts[0].equals("CD")) {
-                    items.add(new CD(parts[1], parts[2], 
-                             Integer.parseInt(parts[3]), Double.parseDouble(parts[4])));
+                    items.add(new CD(parts[1], parts[2], Integer.parseInt(parts[3]), Integer.parseInt(parts[4])));
                 }
             }
         } catch (IOException e) {

@@ -8,8 +8,8 @@ public class LibraryGUI extends JFrame {
     private JTabbedPane tabbedPane;
     private JTable itemsTable;
     private DefaultTableModel tableModel;
-    private JTextField titleField, categoryField, authorField, quantityField, priceField;
-    private JTextField cdTitleField, companyField, durationField, cdPriceField;
+    private JTextField titleField, categoryField, authorField, quantityField;
+    private JTextField cdTitleField, companyField, durationField, cdQuantityField;
     private JComboBox<String> itemTypeCombo;
 
     public LibraryGUI() {
@@ -58,7 +58,6 @@ public class LibraryGUI extends JFrame {
         categoryField = new JTextField(20);
         authorField = new JTextField(20);
         quantityField = new JTextField(20);
-        priceField = new JTextField(20);
 
         bookPanel.add(new JLabel("Title:"));
         bookPanel.add(titleField);
@@ -68,8 +67,6 @@ public class LibraryGUI extends JFrame {
         bookPanel.add(authorField);
         bookPanel.add(new JLabel("Quantity:"));
         bookPanel.add(quantityField);
-        bookPanel.add(new JLabel("Price:"));
-        bookPanel.add(priceField);
 
         JButton addBookButton = new JButton("Add Book");
         addBookButton.addActionListener(e -> addBook());
@@ -82,7 +79,7 @@ public class LibraryGUI extends JFrame {
         cdTitleField = new JTextField(20);
         companyField = new JTextField(20);
         durationField = new JTextField(20);
-        cdPriceField = new JTextField(20);
+        cdQuantityField = new JTextField(20);
 
         cdPanel.add(new JLabel("Title:"));
         cdPanel.add(cdTitleField);
@@ -90,8 +87,8 @@ public class LibraryGUI extends JFrame {
         cdPanel.add(companyField);
         cdPanel.add(new JLabel("Duration (mins):"));
         cdPanel.add(durationField);
-        cdPanel.add(new JLabel("Price:"));
-        cdPanel.add(cdPriceField);
+        cdPanel.add(new JLabel("Quantity:"));
+        cdPanel.add(cdQuantityField);
 
         JButton addCdButton = new JButton("Add CD");
         addCdButton.addActionListener(e -> addCD());
@@ -107,7 +104,7 @@ public class LibraryGUI extends JFrame {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        String[] columns = { "Type", "Title", "Details", "Price", "Status" };
+        String[] columns = { "Type", "Title", "Details", "Status" };
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -190,14 +187,13 @@ public class LibraryGUI extends JFrame {
             String category = categoryField.getText();
             String author = authorField.getText();
             int quantity = Integer.parseInt(quantityField.getText());
-            double price = Double.parseDouble(priceField.getText());
 
             if (quantity <= 0) {
                 JOptionPane.showMessageDialog(this, "Quantity must be greater than 0!");
                 return;
             }
 
-            Book book = new Book(title, category, author, quantity, price);
+            Book book = new Book(title, category, author, quantity);
             library.addItem(book);
             JOptionPane.showMessageDialog(this, "Book added successfully.");
             clearBookFields();
@@ -212,9 +208,14 @@ public class LibraryGUI extends JFrame {
             String title = cdTitleField.getText();
             String company = companyField.getText();
             int duration = Integer.parseInt(durationField.getText());
-            double price = Double.parseDouble(cdPriceField.getText());
+            int quantity = Integer.parseInt(cdQuantityField.getText());
 
-            CD cd = new CD(title, company, duration, price);
+            if (quantity <= 0) {
+                JOptionPane.showMessageDialog(this, "Quantity must be greater than 0!");
+                return;
+            }
+
+            CD cd = new CD(title, company, duration, quantity);
             library.addItem(cd);
             JOptionPane.showMessageDialog(this, "CD added successfully.");
             clearCDFields();
@@ -229,14 +230,13 @@ public class LibraryGUI extends JFrame {
         categoryField.setText("");
         authorField.setText("");
         quantityField.setText("");
-        priceField.setText("");
     }
 
     private void clearCDFields() {
         cdTitleField.setText("");
         companyField.setText("");
         durationField.setText("");
-        cdPriceField.setText("");
+        cdQuantityField.setText("");
     }
 
     private void refreshTable() {
@@ -248,7 +248,6 @@ public class LibraryGUI extends JFrame {
                         "Book",
                         book.getTitle(),
                         "Author: " + book.getAuthor() + ", Category: " + book.getCategory(),
-                        String.format("$%.2f", book.getPrice()),
                         "Available: " + book.getQuantity()
                 });
             } else if (item instanceof CD) {
@@ -257,8 +256,7 @@ public class LibraryGUI extends JFrame {
                         "CD",
                         cd.getTitle(),
                         "Company: " + cd.getCompany() + ", Duration: " + cd.getDuration() + " mins",
-                        String.format("$%.2f", cd.getPrice()),
-                        "Available"
+                        "Available: " + cd.getQuantity()
                 });
             }
         }

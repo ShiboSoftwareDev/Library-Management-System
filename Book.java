@@ -3,8 +3,8 @@ public class Book extends Item {
     private String author;
     private int quantity;
 
-    public Book(String title, String category, String author, int quantity, double price) {
-        super(title, price);
+    public Book(String title, String category, String author, int quantity) {
+        super(title);
         this.category = category;
         this.author = author;
         this.quantity = quantity;
@@ -36,13 +36,12 @@ public class Book extends Item {
 
     @Override
     public String toString() {
-        return "Book: " + title + ", category: " + category + " by " + author + ", quantity: " + quantity + ", price: $"
-                + price;
+        return "Book: " + title + ", category: " + category + " by " + author + ", quantity: " + quantity;
     }
 
     @Override
     public String toCsvString() {
-        return "BOOK," + title + "," + category + "," + author + "," + quantity + "," + price;
+        return "BOOK," + title + "," + category + "," + author + "," + quantity;
     }
 
 }

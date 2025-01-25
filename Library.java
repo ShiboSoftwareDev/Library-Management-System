@@ -69,7 +69,13 @@ public class Library {
                 System.out.println("No copies available");
             }
         } else if (item instanceof CD) {
-            System.out.println("CDs cannot be borrowed");
+            CD cd = (CD) item;
+            if (cd.getQuantity() > 0) {
+                cd.setQuantity(cd.getQuantity() - 1);
+                System.out.println("CD borrowed successfully");
+            } else {
+                System.out.println("No copies available");
+            }
         } else {
             System.out.println("Item not found");
         }
@@ -82,7 +88,9 @@ public class Library {
             book.setQuantity(book.getQuantity() + 1);
             System.out.println("Book returned successfully");
         } else if (item instanceof CD) {
-            System.out.println("CDs cannot be returned");
+            CD cd = (CD) item;
+            cd.setQuantity(cd.getQuantity() + 1);
+            System.out.println("CD returned successfully");
         } else {
             System.out.println("Item not found");
         }

@@ -1,11 +1,13 @@
 public class CD extends Item {
     private String company;
     private int duration;
+    private int quantity;
 
-    public CD(String title, String company, int duration, double price) {
-        super(title, price);
+    public CD(String title, String company, int duration, int quantity) {
+        super(title);
         this.company = company;
         this.duration = duration;
+        this.quantity = quantity;
     }
 
     public String getCompany() {
@@ -24,13 +26,21 @@ public class CD extends Item {
         this.duration = duration;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     @Override
     public String toString() {
-        return "CD: " + title + ", company: " + company + ", duration: " + duration + " mins, price: $" + price;
+        return "CD: " + title + ", company: " + company + ", duration: " + duration + " mins, quantity: " + quantity;
     }
 
     @Override
     public String toCsvString() {
-        return "CD," + title + "," + company + "," + duration + "," + price;
+        return "CD," + title + "," + company + "," + duration + "," + quantity;
     }
 }
