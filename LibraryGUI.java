@@ -152,7 +152,7 @@ public class LibraryGUI extends JFrame {
     }
 
     private JPanel createBorrowReturnPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 2, 5, 5));
+        JPanel panel = new JPanel(new GridLayout(0, 3, 5, 5));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JTextField borrowTitleField = new JTextField(20);
