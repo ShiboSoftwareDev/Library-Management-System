@@ -1,100 +1,130 @@
- import java.util.*;
+import java.util.*;
 
- public class Library {
-     private List<Book> books;
-     public Library() {
-         books = new ArrayList<>();
-     }
+public class Library {
+    private List<Item> items;
+    
+    public Library() {
+        items = FileHandler.loadItems();
+    }
 
-     public void addBook(Book book) {
-         for (Book existingBook : books) {
-             if (isSameBook(existingBook, book)) {
-                 existingBook.setQuantity(existingBook.getQuantity() + book.getQuantity());
-                 return;
-             }
-         }
-         books.add(book);
-     }
+    public void addItem(Item item) {
+        if (item instanceof Book) {
+            Book newBook = (Book) item;
+            for (Item existingItem : items) {
+                if (existingItem instanceof Book) {
+                    Book existingBook = (Book) existingItem;
+                    if (isSameBook(existingBook, newBook)) {
+                        existingBook.setQuantity(existingBook.getQuantity() + newBook.getQuantity());
+                        return;
+                    }
+                }
+            }
+        }
+        items.add(item);
+    }
 
-     private boolean isSameBook(Book book1, Book book2) {
-         return book1.getTitle().equalsIgnoreCase(book2.getTitle())
-             && book1.getAuthor().equalsIgnoreCase(book2.getAuthor())
-             && book1.getCategory().equalsIgnoreCase(book2.getCategory());
-     }
+    private boolean isSameBook(Book book1, Book book2) {
+        return book1.getTitle().equalsIgnoreCase(book2.getTitle())
+            && book1.getAuthor().equalsIgnoreCase(book2.getAuthor())
+            && book1.getCategory().equalsIgnoreCase(book2.getCategory());
+    }
 
-     public Book findBook(String title) {
-         for (Book book : books) {
-             if (book.getTitle().equalsIgnoreCase(title)) {
-                 return book;
-             }
-         }
-         return null;
-     }
+    public Item findItem(String title) {
+        for (Item item : items) {
+            if (item.getTitle().equalsIgnoreCase(title)) {
+                return item;
+            }
+        }
+        return null;
+    }
 
-    public void removeBook(String title, String author) {
-         Book book = findBook(title);
-         if (book != null && book.getAuthor().equalsIgnoreCase(author)) {
-             books.remove(book);
-             System.out.println("Book removed successfully");
-         } else {
-             System.out.println("Book not found");
-         }
-     }
+    public void removeItem(String title, String author) {
+        Item item = findItem(title);
+        if (item instanceof Book) {
+            Book book = (Book) item;
+            if (book.getAuthor().equalsIgnoreCase(author)) {
+                items.remove(book);
+                System.out.println("Book removed successfully");
+                return;
+            }
+        }
+        System.out.println("Item not found");
+    }
 
-     public void borrowBook(String title) {
-         Book book = findBook(title);
-         if (book != null) {
-             if (book.getQuantity() > 0) {
-                 book.setQuantity(book.getQuantity() - 1);
-                 System.out.println("Book borrowed successfully");
-             } else {
-                 System.out.println("No copies available");
-             }
-         } else {
-             System.out.println("Book not found");
-         }
-     }
+    public void borrowItem(String title) {
+        Item item = findItem(title);
+        if (item instanceof Book) {
+            Book book = (Book) item;
+            if (book.getQuantity() > 0) {
+                book.setQuantity(book.getQuantity() - 1);
+                System.out.println("Book borrowed successfully");
+            } else {
+                System.out.println("No copies available");
+            }
+        } else if (item instanceof CD) {
+            System.out.println("CDs cannot be borrowed");
+        } else {
+            System.out.println("Item not found");
+        }
+    }
 
-     public void returnBook(String title) {
-         Book book = findBook(title);
-         if (book != null) {
-             book.setQuantity(book.getQuantity() + 1);
-             System.out.println("Book returned successfully");
-         } else {
-             System.out.println("Book not found");
-         }
-     }
+    public void returnItem(String title) {
+        Item item = findItem(title);
+        if (item instanceof Book) {
+            Book book = (Book) item;
+            book.setQuantity(book.getQuantity() + 1);
+            System.out.println("Book returned successfully");
+        } else if (item instanceof CD) {
+            System.out.println("CDs cannot be returned");
+        } else {
+            System.out.println("Item not found");
+        }
+    }
 
-     public void listAllBooks() {
-         if (books.isEmpty()) {
-             System.out.println("No books in library");
-             return;
-         }
-         for (Book book : books) {
-             System.out.println(book.toString());
-         }
-     }
+    public void listAllItems() {
+        if (items.isEmpty()) {
+            System.out.println("No items in library");
+            return;
+        }
+        for (Item item : items) {
+            System.out.println(item.toString());
+        }
+    }
 
-     public void listAvailableBooks() {
-         boolean foundBooks = false;
-         for (Book book : books) {
-             if (book.getQuantity() > 0) {
-                 System.out.println(book.toString());
-                 foundBooks = true;
-             }
-         }
-         if (!foundBooks) {
-             System.out.println("No available books");
-         }
-     }
+    public void listAvailableItems() {
+        boolean foundItems = false;
+        for (Item item : items) {
+            if (item instanceof Book) {
+                Book book = (Book) item;
+                if (book.getQuantity() > 0) {
+                    System.out.println(book.toString());
+                    foundItems = true;
+                }
+            } else if (item instanceof CD) {
+                System.out.println(item.toString());
+                foundItems = true;
+            }
+        }
+        if (!foundItems) {
+            System.out.println("No available items");
+        }
+    }
 
-     public List<Book> findBookByTitle(String title) {
-         List<Book> matchingBooks = new ArrayList<>();
-         for (Book book : books) {
-             if (book.getTitle().equalsIgnoreCase(title)) {
-                 matchingBooks.add(book);
-             }
-         }
-         return matchingBooks;
-     }
- }
+    public List<Item> findItemsByTitle(String title) {
+        List<Item> matchingItems = new ArrayList<>();
+        for (Item item : items) {
+            if (item.getTitle().equalsIgnoreCase(title)) {
+                matchingItems.add(item);
+            }
+        }
+        return matchingItems;
+    }
+
+    public void saveToFile() {
+        FileHandler.saveItems(items);
+    }
+
+    public List<Item> getAllItems() {
+        return new ArrayList<>(items);
+    }
+}

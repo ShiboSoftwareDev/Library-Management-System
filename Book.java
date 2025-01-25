@@ -1,23 +1,13 @@
-public class Book {
-    private String title;
+public class Book extends Item {
     private String category;
     private String author;
-    private String email;
     private int quantity;
 
-    public Book(String title, String category, String author, int quantity) {
-        this.title = title;
+    public Book(String title, String category, String author, int quantity, double price) {
+        super(title, price);
         this.category = category;
         this.author = author;
         this.quantity = quantity;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getCategory() {
@@ -44,8 +34,14 @@ public class Book {
         this.quantity = quantity;
     }
 
+    @Override
     public String toString() {
-        return this.getTitle() + ", category:" + this.getCategory() + " by " + this.getAuthor() + " quantity: "  + this.getQuantity();
+        return "Book: " + title + ", category: " + category + " by " + author + ", quantity: " + quantity + ", price: $" + price;
+    }
+
+    @Override
+    public String toCsvString() {
+        return "BOOK," + title + "," + category + "," + author + "," + quantity + "," + price;
     }
     
 }
