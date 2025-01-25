@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Library {
     private List<Item> items;
-    
+
     public Library() {
         items = FileHandler.loadItems();
     }
@@ -25,8 +25,8 @@ public class Library {
 
     private boolean isSameBook(Book book1, Book book2) {
         return book1.getTitle().equalsIgnoreCase(book2.getTitle())
-            && book1.getAuthor().equalsIgnoreCase(book2.getAuthor())
-            && book1.getCategory().equalsIgnoreCase(book2.getCategory());
+                && book1.getAuthor().equalsIgnoreCase(book2.getAuthor())
+                && book1.getCategory().equalsIgnoreCase(book2.getCategory());
     }
 
     public Item findItem(String title) {
@@ -38,13 +38,20 @@ public class Library {
         return null;
     }
 
-    public void removeItem(String title, String author) {
+    public void removeItem(String title, String identifier) {
         Item item = findItem(title);
         if (item instanceof Book) {
             Book book = (Book) item;
-            if (book.getAuthor().equalsIgnoreCase(author)) {
+            if (book.getAuthor().equalsIgnoreCase(identifier)) {
                 items.remove(book);
                 System.out.println("Book removed successfully");
+                return;
+            }
+        } else if (item instanceof CD) {
+            CD cd = (CD) item;
+            if (cd.getCompany().equalsIgnoreCase(identifier)) {
+                items.remove(cd);
+                System.out.println("CD removed successfully");
                 return;
             }
         }

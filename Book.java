@@ -36,12 +36,13 @@ public class Book extends Item {
 
     @Override
     public String toString() {
-        return "Book: " + title + ", category: " + category + " by " + author + ", quantity: " + quantity + ", price: $" + price;
+        return "Book: " + title + ", category: " + category + " by " + author + ", quantity: " + quantity + ", price: $"
+                + price;
     }
 
     @Override
     public String toCsvString() {
         return "BOOK," + title + "," + category + "," + author + "," + quantity + "," + price;
     }
-    
+
 }

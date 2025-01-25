@@ -21,20 +21,20 @@ public class LibraryGUI extends JFrame {
         setTitle("Library Management System");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
-        
+
         tabbedPane = new JTabbedPane();
-        
+
         // Add Items Panel
         tabbedPane.addTab("Add Items", createAddItemsPanel());
-        
+
         // View Items Panel
         tabbedPane.addTab("View Items", createViewItemsPanel());
-        
+
         // Borrow/Return Panel
         tabbedPane.addTab("Borrow/Return", createBorrowReturnPanel());
-        
+
         add(tabbedPane);
-        
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -42,7 +42,7 @@ public class LibraryGUI extends JFrame {
                 dispose();
             }
         });
-        
+
         refreshTable();
     }
 
@@ -53,13 +53,13 @@ public class LibraryGUI extends JFrame {
         // Book Panel
         JPanel bookPanel = new JPanel(new GridLayout(0, 2, 5, 5));
         bookPanel.setBorder(BorderFactory.createTitledBorder("Add Book"));
-        
+
         titleField = new JTextField(20);
         categoryField = new JTextField(20);
         authorField = new JTextField(20);
         quantityField = new JTextField(20);
         priceField = new JTextField(20);
-        
+
         bookPanel.add(new JLabel("Title:"));
         bookPanel.add(titleField);
         bookPanel.add(new JLabel("Category:"));
@@ -70,7 +70,7 @@ public class LibraryGUI extends JFrame {
         bookPanel.add(quantityField);
         bookPanel.add(new JLabel("Price:"));
         bookPanel.add(priceField);
-        
+
         JButton addBookButton = new JButton("Add Book");
         addBookButton.addActionListener(e -> addBook());
         bookPanel.add(addBookButton);
@@ -78,12 +78,12 @@ public class LibraryGUI extends JFrame {
         // CD Panel
         JPanel cdPanel = new JPanel(new GridLayout(0, 2, 5, 5));
         cdPanel.setBorder(BorderFactory.createTitledBorder("Add CD"));
-        
+
         cdTitleField = new JTextField(20);
         companyField = new JTextField(20);
         durationField = new JTextField(20);
         cdPriceField = new JTextField(20);
-        
+
         cdPanel.add(new JLabel("Title:"));
         cdPanel.add(cdTitleField);
         cdPanel.add(new JLabel("Company:"));
@@ -92,14 +92,14 @@ public class LibraryGUI extends JFrame {
         cdPanel.add(durationField);
         cdPanel.add(new JLabel("Price:"));
         cdPanel.add(cdPriceField);
-        
+
         JButton addCdButton = new JButton("Add CD");
         addCdButton.addActionListener(e -> addCD());
         cdPanel.add(addCdButton);
 
         panel.add(bookPanel);
         panel.add(cdPanel);
-        
+
         return panel;
     }
 
@@ -107,19 +107,50 @@ public class LibraryGUI extends JFrame {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        String[] columns = {"Type", "Title", "Details", "Price", "Status"};
+        String[] columns = { "Type", "Title", "Details", "Price", "Status" };
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        
+
         itemsTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(itemsTable);
-        
+
         panel.add(scrollPane, BorderLayout.CENTER);
-        
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton deleteAllButton = new JButton("Delete All Items");
+        deleteAllButton.setMargin(new Insets(5, 10, 5, 10));
+        buttonPanel.add(deleteAllButton, BorderLayout.WEST);
+
+        JPanel deleteItemPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JTextField deleteTitleField = new JTextField(10);
+        JTextField deleteIdentifierField = new JTextField(10);
+        JButton deleteItemButton = new JButton("Delete Item");
+        deleteItemButton.addActionListener(e -> {
+            String title = deleteTitleField.getText();
+            String identifier = deleteIdentifierField.getText();
+            library.removeItem(title, identifier);
+            refreshTable();
+            deleteTitleField.setText("");
+            deleteIdentifierField.setText("");
+        });
+        deleteItemPanel.add(new JLabel("Title:"));
+        deleteItemPanel.add(deleteTitleField);
+        deleteItemPanel.add(new JLabel("Author/Company:"));
+        deleteItemPanel.add(deleteIdentifierField);
+        deleteItemPanel.add(deleteItemButton);
+
+        JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel2.add(deleteItemPanel, BorderLayout.EAST);
+
+        JPanel panel2 = new JPanel(new BorderLayout(10, 10));
+        panel.add(panel2, BorderLayout.SOUTH);
+        panel2.add(buttonPanel, BorderLayout.WEST);
+        panel2.add(buttonPanel2, BorderLayout.EAST);
+
         return panel;
     }
 
@@ -213,21 +244,21 @@ public class LibraryGUI extends JFrame {
         for (Item item : library.getAllItems()) {
             if (item instanceof Book) {
                 Book book = (Book) item;
-                tableModel.addRow(new Object[]{
-                    "Book",
-                    book.getTitle(),
-                    "Author: " + book.getAuthor() + ", Category: " + book.getCategory(),
-                    String.format("$%.2f", book.getPrice()),
-                    "Available: " + book.getQuantity()
+                tableModel.addRow(new Object[] {
+                        "Book",
+                        book.getTitle(),
+                        "Author: " + book.getAuthor() + ", Category: " + book.getCategory(),
+                        String.format("$%.2f", book.getPrice()),
+                        "Available: " + book.getQuantity()
                 });
             } else if (item instanceof CD) {
                 CD cd = (CD) item;
-                tableModel.addRow(new Object[]{
-                    "CD",
-                    cd.getTitle(),
-                    "Company: " + cd.getCompany() + ", Duration: " + cd.getDuration() + " mins",
-                    String.format("$%.2f", cd.getPrice()),
-                    "Available"
+                tableModel.addRow(new Object[] {
+                        "CD",
+                        cd.getTitle(),
+                        "Company: " + cd.getCompany() + ", Duration: " + cd.getDuration() + " mins",
+                        String.format("$%.2f", cd.getPrice()),
+                        "Available"
                 });
             }
         }
