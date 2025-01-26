@@ -3,8 +3,9 @@ import javax.swing.JOptionPane;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.WindowAdapter;
 
-public class LibraryGUI extends JFrame {
+public class LibraryGUI extends JFrame implements WindowListener {
     private Library library;
     private JTable itemsTable;
     private DefaultTableModel tableModel;
@@ -38,13 +39,7 @@ public class LibraryGUI extends JFrame {
 
         add(mainPanel);
 
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                library.saveToFile();
-                dispose();
-            }
-        });
+        addWindowListener(this);
 
         refreshTable();
     }
@@ -144,12 +139,8 @@ public class LibraryGUI extends JFrame {
         panel.setBorder(BorderFactory.createTitledBorder("Library Items"));
 
         String[] columns = { "Type", "Title", "Details", "Status" };
-        tableModel = new DefaultTableModel(columns, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
+        tableModel = new DefaultTableModel(columns, 0);
+        ((DefaultTableModel)tableModel).setColumnCount(columns.length);
 
         itemsTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(itemsTable);
@@ -260,6 +251,19 @@ public class LibraryGUI extends JFrame {
             }
         }
     }
+
+    // WindowListener implementation
+    public void windowClosing(WindowEvent e) {
+        library.saveToFile();
+        dispose();
+    }
+    
+    public void windowOpened(WindowEvent e) {}
+    public void windowClosed(WindowEvent e) {}
+    public void windowIconified(WindowEvent e) {}
+    public void windowDeiconified(WindowEvent e) {}
+    public void windowActivated(WindowEvent e) {}
+    public void windowDeactivated(WindowEvent e) {}
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
