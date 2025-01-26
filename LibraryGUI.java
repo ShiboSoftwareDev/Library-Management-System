@@ -248,7 +248,7 @@ public class LibraryGUI extends JFrame {
                         "Book",
                         book.getTitle(),
                         "Author: " + book.getAuthor() + ", Category: " + book.getCategory(),
-                        "Available: " + book.getQuantity()
+                        "Available: " + book.getQuantity() + "/" + book.getCapacity()
                 });
             } else if (item instanceof CD) {
                 CD cd = (CD) item;
@@ -256,7 +256,7 @@ public class LibraryGUI extends JFrame {
                         "CD",
                         cd.getTitle(),
                         "Company: " + cd.getCompany() + ", Duration: " + cd.getDuration() + " mins",
-                        "Available: " + cd.getQuantity()
+                        "Available: " + cd.getQuantity() + "/" + cd.getCapacity()
                 });
             }
         }

@@ -4,7 +4,7 @@ public class CD extends Item {
     private int quantity;
 
     public CD(String title, String company, int duration, int quantity) {
-        super(title);
+        super(title, quantity);
         this.company = company;
         this.duration = duration;
         this.quantity = quantity;
@@ -36,11 +36,11 @@ public class CD extends Item {
 
     @Override
     public String toString() {
-        return "CD: " + title + ", company: " + company + ", duration: " + duration + " mins, quantity: " + quantity;
+        return "CD: " + title + ", company: " + company + ", duration: " + duration + " mins, Available: " + quantity + "/" + capacity;
     }
 
     @Override
     public String toCsvString() {
-        return "CD," + title + "," + company + "," + duration + "," + quantity;
+        return "CD," + title + "," + company + "," + duration + "," + quantity + "," + capacity;
     }
 }

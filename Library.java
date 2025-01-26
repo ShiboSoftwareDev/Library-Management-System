@@ -7,6 +7,12 @@ public class Library {
         items = FileHandler.loadItems();
     }
 
+    private boolean isSameCD(CD cd1, CD cd2) {
+        return cd1.getTitle().equalsIgnoreCase(cd2.getTitle())
+                && cd1.getCompany().equalsIgnoreCase(cd2.getCompany());
+    }
+
+
     public void addItem(Item item) {
         if (item instanceof Book) {
             Book newBook = (Book) item;
@@ -15,6 +21,19 @@ public class Library {
                     Book existingBook = (Book) existingItem;
                     if (isSameBook(existingBook, newBook)) {
                         existingBook.setQuantity(existingBook.getQuantity() + newBook.getQuantity());
+                        existingBook.setCapacity(existingBook.getCapacity() + newBook.getQuantity());
+                        return;
+                    }
+                }
+            }
+        } else if (item instanceof CD) {
+            CD newCD = (CD) item;
+            for (Item existingItem : items) {
+                if (existingItem instanceof CD) {
+                    CD existingCD = (CD) existingItem;
+                    if (isSameCD(existingCD, newCD)) {
+                        existingCD.setQuantity(existingCD.getQuantity() + newCD.getQuantity());
+                        existingCD.setCapacity(existingCD.getCapacity() + newCD.getQuantity());
                         return;
                     }
                 }
@@ -85,12 +104,20 @@ public class Library {
         Item item = findItem(title);
         if (item instanceof Book) {
             Book book = (Book) item;
-            book.setQuantity(book.getQuantity() + 1);
-            System.out.println("Book returned successfully");
+            if (book.getQuantity() < book.getCapacity()) {
+                book.setQuantity(book.getQuantity() + 1);
+                System.out.println("Book returned successfully");
+            } else {
+                System.out.println("Cannot return book - maximum capacity reached");
+            }
         } else if (item instanceof CD) {
             CD cd = (CD) item;
-            cd.setQuantity(cd.getQuantity() + 1);
-            System.out.println("CD returned successfully");
+            if (cd.getQuantity() < cd.getCapacity()) {
+                cd.setQuantity(cd.getQuantity() + 1);
+                System.out.println("CD returned successfully");
+            } else {
+                System.out.println("Cannot return CD - maximum capacity reached");
+            }
         } else {
             System.out.println("Item not found");
         }
