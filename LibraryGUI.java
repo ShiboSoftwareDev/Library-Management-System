@@ -9,8 +9,7 @@ public class LibraryGUI extends JFrame {
     private JTabbedPane tabbedPane;
     private JTable itemsTable;
     private DefaultTableModel tableModel;
-    private JTextField titleField, categoryField, authorField, quantityField;
-    private JTextField cdTitleField, companyField, durationField, cdQuantityField;
+    private JTextField titleField, quantityField;
     private JComboBox<String> itemTypeCombo;
 
     public LibraryGUI() {
@@ -48,57 +47,93 @@ public class LibraryGUI extends JFrame {
     }
 
     private JPanel createAddItemsPanel() {
-        JPanel panel = new JPanel(new GridLayout(2, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Book Panel
-        JPanel bookPanel = new JPanel(new GridLayout(0, 2, 5, 5));
-        bookPanel.setBorder(BorderFactory.createTitledBorder("Add Book"));
+        // Radio buttons for item type selection
+        JPanel radioPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        ButtonGroup itemGroup = new ButtonGroup();
+        JRadioButton bookRadio = new JRadioButton("Book", true);
+        JRadioButton cdRadio = new JRadioButton("CD");
+        itemGroup.add(bookRadio);
+        itemGroup.add(cdRadio);
+        radioPanel.add(bookRadio);
+        radioPanel.add(cdRadio);
+
+        // Input fields panel
+        JPanel inputPanel = new JPanel(new GridLayout(0, 2, 5, 5));
+        inputPanel.setBorder(BorderFactory.createTitledBorder("Item Details"));
 
         titleField = new JTextField(20);
-        categoryField = new JTextField(20);
-        authorField = new JTextField(20);
+        JTextField field2 = new JTextField(20);  // category/company
+        JTextField field3 = new JTextField(20);  // author/duration
         quantityField = new JTextField(20);
 
-        bookPanel.add(new JLabel("Title:"));
-        bookPanel.add(titleField);
-        bookPanel.add(new JLabel("Category:"));
-        bookPanel.add(categoryField);
-        bookPanel.add(new JLabel("Author:"));
-        bookPanel.add(authorField);
-        bookPanel.add(new JLabel("Quantity:"));
-        bookPanel.add(quantityField);
+        JLabel label2 = new JLabel("Category:");
+        JLabel label3 = new JLabel("Author:");
 
-        JButton addBookButton = new JButton("Add Book");
-        addBookButton.addActionListener(e -> addBook());
-        bookPanel.add(addBookButton);
+        inputPanel.add(new JLabel("Title:"));
+        inputPanel.add(titleField);
+        inputPanel.add(label2);
+        inputPanel.add(field2);
+        inputPanel.add(label3);
+        inputPanel.add(field3);
+        inputPanel.add(new JLabel("Quantity:"));
+        inputPanel.add(quantityField);
 
-        // CD Panel
-        JPanel cdPanel = new JPanel(new GridLayout(0, 2, 5, 5));
-        cdPanel.setBorder(BorderFactory.createTitledBorder("Add CD"));
+        JButton addButton = new JButton("Add Item");
 
-        cdTitleField = new JTextField(20);
-        companyField = new JTextField(20);
-        durationField = new JTextField(20);
-        cdQuantityField = new JTextField(20);
+        // Update labels when radio selection changes
+        bookRadio.addActionListener(e -> {
+            label2.setText("Category:");
+            label3.setText("Author:");
+        });
 
-        cdPanel.add(new JLabel("Title:"));
-        cdPanel.add(cdTitleField);
-        cdPanel.add(new JLabel("Company:"));
-        cdPanel.add(companyField);
-        cdPanel.add(new JLabel("Duration (mins):"));
-        cdPanel.add(durationField);
-        cdPanel.add(new JLabel("Quantity:"));
-        cdPanel.add(cdQuantityField);
+        cdRadio.addActionListener(e -> {
+            label2.setText("Company:");
+            label3.setText("Duration (mins):");
+        });
 
-        JButton addCdButton = new JButton("Add CD");
-        addCdButton.addActionListener(e -> addCD());
-        cdPanel.add(addCdButton);
+        addButton.addActionListener(e -> {
+            try {
+                if (bookRadio.isSelected()) {
+                    Book book = new Book(
+                        titleField.getText(),
+                        field2.getText(),
+                        field3.getText(),
+                        Integer.parseInt(quantityField.getText())
+                    );
+                    library.addItem(book);
+                    refreshTable();
+                } else {
+                    CD cd = new CD(
+                        titleField.getText(),
+                        field2.getText(),
+                        Integer.parseInt(field3.getText()),
+                        Integer.parseInt(quantityField.getText())
+                    );
+                    library.addItem(cd);
+                    refreshTable();
+                }
+                titleField.setText("");
+                field2.setText("");
+                field3.setText("");
+                quantityField.setText("");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(mainPanel, 
+                    "Invalid number format!", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
-        panel.add(bookPanel);
-        panel.add(cdPanel);
+        inputPanel.add(new JLabel(""));
+        inputPanel.add(addButton);
 
-        return panel;
+        mainPanel.add(radioPanel, BorderLayout.NORTH);
+        mainPanel.add(inputPanel, BorderLayout.CENTER);
+
+        return mainPanel;
     }
 
     private JPanel createViewItemsPanel() {
@@ -198,61 +233,6 @@ public class LibraryGUI extends JFrame {
         return mainPanel;
     }
 
-    private void addBook() {
-        try {
-            String title = titleField.getText();
-            String category = categoryField.getText();
-            String author = authorField.getText();
-            int quantity = Integer.parseInt(quantityField.getText());
-
-            if (quantity <= 0) {
-                JOptionPane.showMessageDialog(this, "Quantity must be greater than 0!");
-                return;
-            }
-
-            Book book = new Book(title, category, author, quantity);
-            library.addItem(book);
-            clearBookFields();
-            refreshTable();
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid number format!");
-        }
-    }
-
-    private void addCD() {
-        try {
-            String title = cdTitleField.getText();
-            String company = companyField.getText();
-            int duration = Integer.parseInt(durationField.getText());
-            int quantity = Integer.parseInt(cdQuantityField.getText());
-
-            if (quantity <= 0) {
-                JOptionPane.showMessageDialog(this, "Quantity must be greater than 0!");
-                return;
-            }
-
-            CD cd = new CD(title, company, duration, quantity);
-            library.addItem(cd);
-            clearCDFields();
-            refreshTable();
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid number format!");
-        }
-    }
-
-    private void clearBookFields() {
-        titleField.setText("");
-        categoryField.setText("");
-        authorField.setText("");
-        quantityField.setText("");
-    }
-
-    private void clearCDFields() {
-        cdTitleField.setText("");
-        companyField.setText("");
-        durationField.setText("");
-        cdQuantityField.setText("");
-    }
 
     private void refreshTable() {
         tableModel.setRowCount(0);
