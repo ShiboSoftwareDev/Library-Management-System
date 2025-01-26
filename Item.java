@@ -23,7 +23,11 @@ public abstract class Item {
         this.title = title;
     }
 
-    public abstract String toTxtString();
+    public String toString() {
+        return "Item: " + title + ", Capacity: " + capacity;
+    }
 
-    public abstract String toString();
+    public String toTxtString() {
+        return "ITEM," + title + "," + capacity;
+    }
 }
