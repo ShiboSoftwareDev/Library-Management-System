@@ -34,14 +34,12 @@ public class CD extends Item {
         this.quantity = quantity;
     }
 
-    @Override
     public String toString() {
         return "CD: " + title + ", company: " + company + ", duration: " + duration + " mins, Available: " + quantity
                 + "/" + capacity;
     }
 
-    @Override
-    public String toCsvString() {
+    public String toTxtString() {
         return "CD," + title + "," + company + "," + duration + "," + quantity + "," + capacity;
     }
 

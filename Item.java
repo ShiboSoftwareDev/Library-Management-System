@@ -23,7 +23,7 @@ public abstract class Item {
         this.title = title;
     }
 
-    public abstract String toCsvString();
+    public abstract String toTxtString();
 
     public abstract String toString();
 }

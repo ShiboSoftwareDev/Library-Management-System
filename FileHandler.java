@@ -27,7 +27,7 @@ public class FileHandler {
     public static void saveItems(List<Item> items) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH))) {
             for (Item item : items) {
-                writer.println(item.toCsvString());
+                writer.println(item.toTxtString());
             }
         } catch (IOException e) {
             System.out.println("Error saving items to file: " + e.getMessage());

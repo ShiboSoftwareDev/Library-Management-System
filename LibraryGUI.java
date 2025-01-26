@@ -3,14 +3,12 @@ import javax.swing.JOptionPane;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.WindowAdapter;
 
 public class LibraryGUI extends JFrame implements WindowListener {
     private Library library;
     private JTable itemsTable;
     private DefaultTableModel tableModel;
     private JTextField titleField, quantityField;
-    private JComboBox<String> itemTypeCombo;
 
     public LibraryGUI() {
         library = new Library();
@@ -25,11 +23,9 @@ public class LibraryGUI extends JFrame implements WindowListener {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Create a panel for the table on the left
         JPanel leftPanel = createViewItemsPanel();
         leftPanel.setPreferredSize(new Dimension(500, 600));
 
-        // Create a panel for add/borrow/return on the right
         JPanel rightPanel = new JPanel(new GridLayout(2, 1, 10, 10));
         rightPanel.add(createAddItemsPanel());
         rightPanel.add(createBorrowReturnPanel());
@@ -48,7 +44,6 @@ public class LibraryGUI extends JFrame implements WindowListener {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Radio buttons for item type selection
         JPanel radioPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         ButtonGroup itemGroup = new ButtonGroup();
         JRadioButton bookRadio = new JRadioButton("Book", true);
@@ -58,13 +53,12 @@ public class LibraryGUI extends JFrame implements WindowListener {
         radioPanel.add(bookRadio);
         radioPanel.add(cdRadio);
 
-        // Input fields panel
         JPanel inputPanel = new JPanel(new GridLayout(0, 2, 5, 5));
         inputPanel.setBorder(BorderFactory.createTitledBorder("Item Details"));
 
         titleField = new JTextField(20);
-        JTextField field2 = new JTextField(20); // category/company
-        JTextField field3 = new JTextField(20); // author/duration
+        JTextField field2 = new JTextField(20);
+        JTextField field3 = new JTextField(20);
         quantityField = new JTextField(20);
 
         JLabel label2 = new JLabel("Category:");
@@ -81,18 +75,17 @@ public class LibraryGUI extends JFrame implements WindowListener {
 
         JButton addButton = new JButton("Add Item");
 
-        // Update labels when radio selection changes
-        bookRadio.addActionListener(e -> {
+        bookRadio.addActionListener(_ -> {
             label2.setText("Category:");
             label3.setText("Author:");
         });
 
-        cdRadio.addActionListener(e -> {
+        cdRadio.addActionListener(_ -> {
             label2.setText("Company:");
             label3.setText("Duration (mins):");
         });
 
-        addButton.addActionListener(e -> {
+        addButton.addActionListener(_ -> {
             try {
                 if (bookRadio.isSelected()) {
                     Book book = new Book(
@@ -147,12 +140,11 @@ public class LibraryGUI extends JFrame implements WindowListener {
 
         JPanel deletePanel = new JPanel(new GridLayout(2, 1, 5, 5));
 
-        // Delete item panel
         JPanel deleteItemPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JTextField deleteTitleField = new JTextField(8);
         JTextField deleteIdentifierField = new JTextField(8);
         JButton deleteItemButton = new JButton("Delete Item");
-        deleteItemButton.addActionListener(e -> {
+        deleteItemButton.addActionListener(_ -> {
             String title = deleteTitleField.getText();
             String identifier = deleteIdentifierField.getText();
             library.removeItem(title, identifier);
@@ -166,7 +158,6 @@ public class LibraryGUI extends JFrame implements WindowListener {
         deleteItemPanel.add(deleteIdentifierField);
         deleteItemPanel.add(deleteItemButton, BorderLayout.EAST);
 
-        // Delete all panel
         JPanel deleteAllPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton deleteAllButton = new JButton("Delete All Items");
         deleteAllButton.setMargin(new Insets(5, 10, 5, 10));
@@ -184,7 +175,6 @@ public class LibraryGUI extends JFrame implements WindowListener {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Radio buttons for action selection
         JPanel radioPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         ButtonGroup actionGroup = new ButtonGroup();
         JRadioButton borrowRadio = new JRadioButton("Borrow", true);
@@ -194,7 +184,6 @@ public class LibraryGUI extends JFrame implements WindowListener {
         radioPanel.add(borrowRadio);
         radioPanel.add(returnRadio);
 
-        // Input fields panel
         JPanel inputPanel = new JPanel(new GridLayout(0, 2, 5, 5));
         inputPanel.setBorder(BorderFactory.createTitledBorder("Item Details"));
 
@@ -202,7 +191,7 @@ public class LibraryGUI extends JFrame implements WindowListener {
         JTextField identifierField = new JTextField(20);
         JButton actionButton = new JButton("Submit");
 
-        actionButton.addActionListener(e -> {
+        actionButton.addActionListener(_ -> {
             if (borrowRadio.isSelected()) {
                 library.borrowItem(titleField.getText(), identifierField.getText());
             } else {
@@ -249,7 +238,6 @@ public class LibraryGUI extends JFrame implements WindowListener {
         }
     }
 
-    // WindowListener implementation
     public void windowClosing(WindowEvent e) {
         library.saveToFile();
         dispose();

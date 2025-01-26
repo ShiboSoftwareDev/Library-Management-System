@@ -34,14 +34,12 @@ public class Book extends Item {
         this.quantity = quantity;
     }
 
-    @Override
     public String toString() {
         return "Book: " + title + ", category: " + category + " by " + author + ", Available: " + quantity + "/"
                 + capacity;
     }
 
-    @Override
-    public String toCsvString() {
+    public String toTxtString() {
         return "BOOK," + title + "," + category + "," + author + "," + quantity + "," + capacity;
     }
 
