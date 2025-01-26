@@ -6,7 +6,6 @@ import javax.swing.table.DefaultTableModel;
 
 public class LibraryGUI extends JFrame {
     private Library library;
-    private JTabbedPane tabbedPane;
     private JTable itemsTable;
     private DefaultTableModel tableModel;
     private JTextField titleField, quantityField;
@@ -20,20 +19,24 @@ public class LibraryGUI extends JFrame {
     private void setupGUI() {
         setTitle("Library Management System");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(1000, 800);
 
-        tabbedPane = new JTabbedPane();
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Add Items Panel
-        tabbedPane.addTab("Add Items", createAddItemsPanel());
+        // Create a panel for the table on the left
+        JPanel leftPanel = createViewItemsPanel();
+        leftPanel.setPreferredSize(new Dimension(500, 600));
 
-        // View Items Panel
-        tabbedPane.addTab("View Items", createViewItemsPanel());
+        // Create a panel for add/borrow/return on the right
+        JPanel rightPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        rightPanel.add(createAddItemsPanel());
+        rightPanel.add(createBorrowReturnPanel());
 
-        // Borrow/Return Panel
-        tabbedPane.addTab("Borrow/Return", createBorrowReturnPanel());
+        mainPanel.add(leftPanel, BorderLayout.CENTER);
+        mainPanel.add(rightPanel, BorderLayout.EAST);
 
-        add(tabbedPane);
+        add(mainPanel);
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -138,7 +141,7 @@ public class LibraryGUI extends JFrame {
 
     private JPanel createViewItemsPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panel.setBorder(BorderFactory.createTitledBorder("Library Items"));
 
         String[] columns = { "Type", "Title", "Details", "Status" };
         tableModel = new DefaultTableModel(columns, 0) {
@@ -153,14 +156,12 @@ public class LibraryGUI extends JFrame {
 
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton deleteAllButton = new JButton("Delete All Items");
-        deleteAllButton.setMargin(new Insets(5, 10, 5, 10));
-        buttonPanel.add(deleteAllButton, BorderLayout.WEST);
-
+        JPanel deletePanel = new JPanel(new GridLayout(2, 1, 5, 5));
+        
+        // Delete item panel
         JPanel deleteItemPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JTextField deleteTitleField = new JTextField(10);
-        JTextField deleteIdentifierField = new JTextField(10);
+        JTextField deleteTitleField = new JTextField(8);
+        JTextField deleteIdentifierField = new JTextField(8);
         JButton deleteItemButton = new JButton("Delete Item");
         deleteItemButton.addActionListener(e -> {
             String title = deleteTitleField.getText();
@@ -174,15 +175,18 @@ public class LibraryGUI extends JFrame {
         deleteItemPanel.add(deleteTitleField);
         deleteItemPanel.add(new JLabel("Author/Company:"));
         deleteItemPanel.add(deleteIdentifierField);
-        deleteItemPanel.add(deleteItemButton);
+        deleteItemPanel.add(deleteItemButton, BorderLayout.EAST);
 
-        JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel2.add(deleteItemPanel, BorderLayout.EAST);
+        // Delete all panel
+        JPanel deleteAllPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton deleteAllButton = new JButton("Delete All Items");
+        deleteAllButton.setMargin(new Insets(5, 10, 5, 10));
+        deleteAllPanel.add(deleteAllButton);
 
-        JPanel panel2 = new JPanel(new BorderLayout(10, 10));
-        panel.add(panel2, BorderLayout.SOUTH);
-        panel2.add(buttonPanel, BorderLayout.WEST);
-        panel2.add(buttonPanel2, BorderLayout.EAST);
+        deletePanel.add(deleteItemPanel);
+        deletePanel.add(deleteAllPanel);
+
+        panel.add(deletePanel, BorderLayout.SOUTH);
 
         return panel;
     }
