@@ -153,33 +153,55 @@ public class LibraryGUI extends JFrame {
     }
 
     private JPanel createBorrowReturnPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 3, 5, 5));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel mainPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Borrow Panel
+        JPanel borrowPanel = new JPanel(new GridLayout(0, 2, 5, 5));
+        borrowPanel.setBorder(BorderFactory.createTitledBorder("Borrow Item"));
 
         JTextField borrowTitleField = new JTextField(20);
-        JButton borrowButton = new JButton("Borrow Item");
+        JTextField borrowIdentifierField = new JTextField(20);
+        JButton borrowButton = new JButton("Borrow");
         borrowButton.addActionListener(e -> {
-            library.borrowItem(borrowTitleField.getText());
+            library.borrowItem(borrowTitleField.getText(), borrowIdentifierField.getText());
             refreshTable();
             borrowTitleField.setText("");
+            borrowIdentifierField.setText("");
         });
+
+        borrowPanel.add(new JLabel("Title:"));
+        borrowPanel.add(borrowTitleField);
+        borrowPanel.add(new JLabel("Author/Company:"));
+        borrowPanel.add(borrowIdentifierField);
+        borrowPanel.add(new JLabel(""));
+        borrowPanel.add(borrowButton);
+
+        // Return Panel
+        JPanel returnPanel = new JPanel(new GridLayout(0, 2, 5, 5));
+        returnPanel.setBorder(BorderFactory.createTitledBorder("Return Item"));
 
         JTextField returnTitleField = new JTextField(20);
-        JButton returnButton = new JButton("Return Item");
+        JTextField returnIdentifierField = new JTextField(20);
+        JButton returnButton = new JButton("Return");
         returnButton.addActionListener(e -> {
-            library.returnItem(returnTitleField.getText());
+            library.returnItem(returnTitleField.getText(), returnIdentifierField.getText());
             refreshTable();
             returnTitleField.setText("");
+            returnIdentifierField.setText("");
         });
 
-        panel.add(new JLabel("Title to Borrow:"));
-        panel.add(borrowTitleField);
-        panel.add(borrowButton);
-        panel.add(new JLabel("Title to Return:"));
-        panel.add(returnTitleField);
-        panel.add(returnButton);
+        returnPanel.add(new JLabel("Title:"));
+        returnPanel.add(returnTitleField);
+        returnPanel.add(new JLabel("Author/Company:"));
+        returnPanel.add(returnIdentifierField);
+        returnPanel.add(new JLabel(""));
+        returnPanel.add(returnButton);
 
-        return panel;
+        mainPanel.add(borrowPanel);
+        mainPanel.add(returnPanel);
+
+        return mainPanel;
     }
 
     private void addBook() {

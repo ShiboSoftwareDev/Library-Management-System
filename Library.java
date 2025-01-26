@@ -131,41 +131,95 @@ public class Library {
         }
     }
 
-    public void borrowItem(String title) {
-        Item item = findItem(title);
-        if (item instanceof Book) {
-            Book book = (Book) item;
-            if (book.getQuantity() > 0) {
-                book.setQuantity(book.getQuantity() - 1);
-            } else {
+    public void borrowItem(String title, String identifier) {
+        String message = "";
+        List<Item> foundItems = findAllItems(title);
+        boolean itemBorrowed = false;
+
+        for (Item item : foundItems) {
+            if (item instanceof Book) {
+                Book book = (Book) item;
+                if (book.getAuthor().equalsIgnoreCase(identifier)) {
+                    if (book.getQuantity() > 0) {
+                        book.setQuantity(book.getQuantity() - 1);
+                        message = "Book borrowed successfully";
+                        itemBorrowed = true;
+                    } else {
+                        message = "No copies available";
+                    }
+                    break;
+                }
+            } else if (item instanceof CD) {
+                CD cd = (CD) item;
+                if (cd.getCompany().equalsIgnoreCase(identifier)) {
+                    if (cd.getQuantity() > 0) {
+                        cd.setQuantity(cd.getQuantity() - 1);
+                        message = "CD borrowed successfully";
+                        itemBorrowed = true;
+                    } else {
+                        message = "No copies available";
+                    }
+                    break;
+                }
             }
-        } else if (item instanceof CD) {
-            CD cd = (CD) item;
-            if (cd.getQuantity() > 0) {
-                cd.setQuantity(cd.getQuantity() - 1);
-            } else {
-                System.out.println("No copies available");
-            }
+        }
+        
+        if (!itemBorrowed && message.isEmpty()) {
+            message = "Item not found";
+        }
+
+        if (message.equals("No copies available")) {
+            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (message.endsWith("successfully")) {
+            JOptionPane.showMessageDialog(null, message, "Success", JOptionPane.INFORMATION_MESSAGE);
         } else {
+            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public void returnItem(String title) {
-        Item item = findItem(title);
-        if (item instanceof Book) {
-            Book book = (Book) item;
-            if (book.getQuantity() < book.getCapacity()) {
-                book.setQuantity(book.getQuantity() + 1);
-            } else {
+    public void returnItem(String title, String identifier) {
+        String message = "";
+        List<Item> foundItems = findAllItems(title);
+        boolean itemReturned = false;
+
+        for (Item item : foundItems) {
+            if (item instanceof Book) {
+                Book book = (Book) item;
+                if (book.getAuthor().equalsIgnoreCase(identifier)) {
+                    if (book.getQuantity() < book.getCapacity()) {
+                        book.setQuantity(book.getQuantity() + 1);
+                        message = "Book returned successfully";
+                        itemReturned = true;
+                    } else {
+                        message = "Cannot return book - maximum capacity reached";
+                    }
+                    break;
+                }
+            } else if (item instanceof CD) {
+                CD cd = (CD) item;
+                if (cd.getCompany().equalsIgnoreCase(identifier)) {
+                    if (cd.getQuantity() < cd.getCapacity()) {
+                        cd.setQuantity(cd.getQuantity() + 1);
+                        message = "CD returned successfully";
+                        itemReturned = true;
+                    } else {
+                        message = "Cannot return CD - maximum capacity reached";
+                    }
+                    break;
+                }
             }
-        } else if (item instanceof CD) {
-            CD cd = (CD) item;
-            if (cd.getQuantity() < cd.getCapacity()) {
-                cd.setQuantity(cd.getQuantity() + 1);
-            } else {
-            }
+        }
+        
+        if (!itemReturned && message.isEmpty()) {
+            message = "Item not found";
+        }
+
+        if (message.contains("maximum capacity")) {
+            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (message.endsWith("successfully")) {
+            JOptionPane.showMessageDialog(null, message, "Success", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            System.out.println("Item not found");
+            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
