@@ -262,9 +262,7 @@ public class LibraryGUI extends JFrame implements WindowListener {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            LibraryGUI gui = new LibraryGUI();
-            gui.setVisible(true);
-        });
+        LibraryGUI gui = new LibraryGUI();
+        gui.setVisible(true);
     }
 }
