@@ -153,53 +153,47 @@ public class LibraryGUI extends JFrame {
     }
 
     private JPanel createBorrowReturnPanel() {
-        JPanel mainPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Borrow Panel
-        JPanel borrowPanel = new JPanel(new GridLayout(0, 2, 5, 5));
-        borrowPanel.setBorder(BorderFactory.createTitledBorder("Borrow Item"));
+        // Radio buttons for action selection
+        JPanel radioPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        ButtonGroup actionGroup = new ButtonGroup();
+        JRadioButton borrowRadio = new JRadioButton("Borrow", true);
+        JRadioButton returnRadio = new JRadioButton("Return");
+        actionGroup.add(borrowRadio);
+        actionGroup.add(returnRadio);
+        radioPanel.add(borrowRadio);
+        radioPanel.add(returnRadio);
 
-        JTextField borrowTitleField = new JTextField(20);
-        JTextField borrowIdentifierField = new JTextField(20);
-        JButton borrowButton = new JButton("Borrow");
-        borrowButton.addActionListener(e -> {
-            library.borrowItem(borrowTitleField.getText(), borrowIdentifierField.getText());
+        // Input fields panel
+        JPanel inputPanel = new JPanel(new GridLayout(0, 2, 5, 5));
+        inputPanel.setBorder(BorderFactory.createTitledBorder("Item Details"));
+
+        JTextField titleField = new JTextField(20);
+        JTextField identifierField = new JTextField(20);
+        JButton actionButton = new JButton("Submit");
+
+        actionButton.addActionListener(e -> {
+            if (borrowRadio.isSelected()) {
+                library.borrowItem(titleField.getText(), identifierField.getText());
+            } else {
+                library.returnItem(titleField.getText(), identifierField.getText());
+            }
             refreshTable();
-            borrowTitleField.setText("");
-            borrowIdentifierField.setText("");
+            titleField.setText("");
+            identifierField.setText("");
         });
 
-        borrowPanel.add(new JLabel("Title:"));
-        borrowPanel.add(borrowTitleField);
-        borrowPanel.add(new JLabel("Author/Company:"));
-        borrowPanel.add(borrowIdentifierField);
-        borrowPanel.add(new JLabel(""));
-        borrowPanel.add(borrowButton);
+        inputPanel.add(new JLabel("Title:"));
+        inputPanel.add(titleField);
+        inputPanel.add(new JLabel("Author/Company:"));
+        inputPanel.add(identifierField);
+        inputPanel.add(new JLabel(""));
+        inputPanel.add(actionButton);
 
-        // Return Panel
-        JPanel returnPanel = new JPanel(new GridLayout(0, 2, 5, 5));
-        returnPanel.setBorder(BorderFactory.createTitledBorder("Return Item"));
-
-        JTextField returnTitleField = new JTextField(20);
-        JTextField returnIdentifierField = new JTextField(20);
-        JButton returnButton = new JButton("Return");
-        returnButton.addActionListener(e -> {
-            library.returnItem(returnTitleField.getText(), returnIdentifierField.getText());
-            refreshTable();
-            returnTitleField.setText("");
-            returnIdentifierField.setText("");
-        });
-
-        returnPanel.add(new JLabel("Title:"));
-        returnPanel.add(returnTitleField);
-        returnPanel.add(new JLabel("Author/Company:"));
-        returnPanel.add(returnIdentifierField);
-        returnPanel.add(new JLabel(""));
-        returnPanel.add(returnButton);
-
-        mainPanel.add(borrowPanel);
-        mainPanel.add(returnPanel);
+        mainPanel.add(radioPanel, BorderLayout.NORTH);
+        mainPanel.add(inputPanel, BorderLayout.CENTER);
 
         return mainPanel;
     }
