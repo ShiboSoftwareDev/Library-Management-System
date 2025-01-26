@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.table.DefaultTableModel;
@@ -195,7 +196,6 @@ public class LibraryGUI extends JFrame {
 
             Book book = new Book(title, category, author, quantity);
             library.addItem(book);
-            JOptionPane.showMessageDialog(this, "Book added successfully.");
             clearBookFields();
             refreshTable();
         } catch (NumberFormatException e) {
@@ -217,7 +217,6 @@ public class LibraryGUI extends JFrame {
 
             CD cd = new CD(title, company, duration, quantity);
             library.addItem(cd);
-            JOptionPane.showMessageDialog(this, "CD added successfully.");
             clearCDFields();
             refreshTable();
         } catch (NumberFormatException e) {

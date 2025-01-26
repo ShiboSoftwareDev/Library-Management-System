@@ -1,4 +1,5 @@
 import java.util.*;
+import javax.swing.JOptionPane;
 
 public class Library {
     private List<Item> items;
@@ -9,33 +10,81 @@ public class Library {
 
 
 
-    public void addItem(Item item) {
-        if (item instanceof Book) {
-            Book newBook = (Book) item;
-            for (Item existingItem : items) {
+    private boolean hasConflictingName(Item newItem) {
+        String newTitle = newItem.getTitle();
+        String newIdentifier = "";
+        
+        if (newItem instanceof Book) {
+            newIdentifier = ((Book)newItem).getAuthor();
+        } else if (newItem instanceof CD) {
+            newIdentifier = ((CD)newItem).getCompany();
+        }
+
+        for (Item existingItem : items) {
+            if (!existingItem.getClass().equals(newItem.getClass()) && 
+                existingItem.getTitle().equalsIgnoreCase(newTitle)) {
                 if (existingItem instanceof Book) {
-                    Book existingBook = (Book) existingItem;
-                    if (existingBook.isSameBook(newBook)) {
-                        existingBook.setQuantity(existingBook.getQuantity() + newBook.getQuantity());
-                        existingBook.setCapacity(existingBook.getCapacity() + newBook.getQuantity());
-                        return;
+                    if (((Book)existingItem).getAuthor().equalsIgnoreCase(newIdentifier)) {
+                        return true;
                     }
-                }
-            }
-        } else if (item instanceof CD) {
-            CD newCD = (CD) item;
-            for (Item existingItem : items) {
-                if (existingItem instanceof CD) {
-                    CD existingCD = (CD) existingItem;
-                    if (existingCD.isSameCD(newCD)) {
-                        existingCD.setQuantity(existingCD.getQuantity() + newCD.getQuantity());
-                        existingCD.setCapacity(existingCD.getCapacity() + newCD.getQuantity());
-                        return;
+                } else if (existingItem instanceof CD) {
+                    if (((CD)existingItem).getCompany().equalsIgnoreCase(newIdentifier)) {
+                        return true;
                     }
                 }
             }
         }
-        items.add(item);
+        return false;
+    }
+
+    public void addItem(Item item) {
+        String message = "";
+        
+        if (hasConflictingName(item)) {
+            message = "Cannot add item - an item of different type with same name and author/company already exists";
+        } else {
+            if (item instanceof Book) {
+                Book newBook = (Book) item;
+                for (Item existingItem : items) {
+                    if (existingItem instanceof Book) {
+                        Book existingBook = (Book) existingItem;
+                        if (existingBook.isSameBook(newBook)) {
+                            existingBook.setQuantity(existingBook.getQuantity() + newBook.getQuantity());
+                            existingBook.setCapacity(existingBook.getCapacity() + newBook.getQuantity());
+                            message = "Book quantity updated successfully";
+                            break;
+                        }
+                    }
+                }
+                if (message.isEmpty()) {
+                    items.add(item);
+                    message = "Book added successfully";
+                }
+            } else if (item instanceof CD) {
+                CD newCD = (CD) item;
+                for (Item existingItem : items) {
+                    if (existingItem instanceof CD) {
+                        CD existingCD = (CD) existingItem;
+                        if (existingCD.isSameCD(newCD)) {
+                            existingCD.setQuantity(existingCD.getQuantity() + newCD.getQuantity());
+                            existingCD.setCapacity(existingCD.getCapacity() + newCD.getQuantity());
+                            message = "CD quantity updated successfully";
+                            break;
+                        }
+                    }
+                }
+                if (message.isEmpty()) {
+                    items.add(item);
+                    message = "CD added successfully";
+                }
+            }
+        }
+        
+        if (message.startsWith("Cannot")) {
+            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
 
@@ -67,21 +116,18 @@ public class Library {
                 Book book = (Book) item;
                 if (book.getAuthor().equalsIgnoreCase(identifier)) {
                     items.remove(book);
-                    System.out.println("Book removed successfully");
                     itemRemoved = true;
                 }
             } else if (item instanceof CD) {
                 CD cd = (CD) item;
                 if (cd.getCompany().equalsIgnoreCase(identifier)) {
                     items.remove(cd);
-                    System.out.println("CD removed successfully");
                     itemRemoved = true;
                 }
             }
         }
         
         if (!itemRemoved) {
-            System.out.println("Item not found");
         }
     }
 
@@ -91,20 +137,16 @@ public class Library {
             Book book = (Book) item;
             if (book.getQuantity() > 0) {
                 book.setQuantity(book.getQuantity() - 1);
-                System.out.println("Book borrowed successfully");
             } else {
-                System.out.println("No copies available");
             }
         } else if (item instanceof CD) {
             CD cd = (CD) item;
             if (cd.getQuantity() > 0) {
                 cd.setQuantity(cd.getQuantity() - 1);
-                System.out.println("CD borrowed successfully");
             } else {
                 System.out.println("No copies available");
             }
         } else {
-            System.out.println("Item not found");
         }
     }
 
@@ -114,17 +156,13 @@ public class Library {
             Book book = (Book) item;
             if (book.getQuantity() < book.getCapacity()) {
                 book.setQuantity(book.getQuantity() + 1);
-                System.out.println("Book returned successfully");
             } else {
-                System.out.println("Cannot return book - maximum capacity reached");
             }
         } else if (item instanceof CD) {
             CD cd = (CD) item;
             if (cd.getQuantity() < cd.getCapacity()) {
                 cd.setQuantity(cd.getQuantity() + 1);
-                System.out.println("CD returned successfully");
             } else {
-                System.out.println("Cannot return CD - maximum capacity reached");
             }
         } else {
             System.out.println("Item not found");

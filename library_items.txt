@@ -1,1 +1,5 @@
 BOOK,one,three,three,3,3
+BOOK,four,five,five,2,2
+CD,six,seven,3,3,3
+CD,five,six,3,6,6
+BOOK,five,six,3,3,3
