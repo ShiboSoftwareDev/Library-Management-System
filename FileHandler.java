@@ -12,10 +12,10 @@ public class FileHandler {
                 String[] parts = line.split(",");
                 if (parts[0].equals("BOOK")) {
                     items.add(new Book(parts[1], parts[2], parts[3], Integer.parseInt(parts[4])));
-                    items.get(items.size()-1).setCapacity(Integer.parseInt(parts[5]));
+                    items.get(items.size() - 1).setCapacity(Integer.parseInt(parts[5]));
                 } else if (parts[0].equals("CD")) {
                     items.add(new CD(parts[1], parts[2], Integer.parseInt(parts[3]), Integer.parseInt(parts[4])));
-                    items.get(items.size()-1).setCapacity(Integer.parseInt(parts[5]));
+                    items.get(items.size() - 1).setCapacity(Integer.parseInt(parts[5]));
                 }
             }
         } catch (IOException e) {

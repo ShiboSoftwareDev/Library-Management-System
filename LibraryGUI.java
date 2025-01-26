@@ -63,8 +63,8 @@ public class LibraryGUI extends JFrame implements WindowListener {
         inputPanel.setBorder(BorderFactory.createTitledBorder("Item Details"));
 
         titleField = new JTextField(20);
-        JTextField field2 = new JTextField(20);  // category/company
-        JTextField field3 = new JTextField(20);  // author/duration
+        JTextField field2 = new JTextField(20); // category/company
+        JTextField field3 = new JTextField(20); // author/duration
         quantityField = new JTextField(20);
 
         JLabel label2 = new JLabel("Category:");
@@ -96,20 +96,18 @@ public class LibraryGUI extends JFrame implements WindowListener {
             try {
                 if (bookRadio.isSelected()) {
                     Book book = new Book(
-                        titleField.getText(),
-                        field2.getText(),
-                        field3.getText(),
-                        Integer.parseInt(quantityField.getText())
-                    );
+                            titleField.getText(),
+                            field2.getText(),
+                            field3.getText(),
+                            Integer.parseInt(quantityField.getText()));
                     library.addItem(book);
                     refreshTable();
                 } else {
                     CD cd = new CD(
-                        titleField.getText(),
-                        field2.getText(),
-                        Integer.parseInt(field3.getText()),
-                        Integer.parseInt(quantityField.getText())
-                    );
+                            titleField.getText(),
+                            field2.getText(),
+                            Integer.parseInt(field3.getText()),
+                            Integer.parseInt(quantityField.getText()));
                     library.addItem(cd);
                     refreshTable();
                 }
@@ -118,10 +116,10 @@ public class LibraryGUI extends JFrame implements WindowListener {
                 field3.setText("");
                 quantityField.setText("");
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(mainPanel, 
-                    "Invalid number format!", 
-                    "Error", 
-                    JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainPanel,
+                        "Invalid number format!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -140,7 +138,7 @@ public class LibraryGUI extends JFrame implements WindowListener {
 
         String[] columns = { "Type", "Title", "Details", "Status" };
         tableModel = new DefaultTableModel(columns, 0);
-        ((DefaultTableModel)tableModel).setColumnCount(columns.length);
+        ((DefaultTableModel) tableModel).setColumnCount(columns.length);
 
         itemsTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(itemsTable);
@@ -148,7 +146,7 @@ public class LibraryGUI extends JFrame implements WindowListener {
         panel.add(scrollPane, BorderLayout.CENTER);
 
         JPanel deletePanel = new JPanel(new GridLayout(2, 1, 5, 5));
-        
+
         // Delete item panel
         JPanel deleteItemPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JTextField deleteTitleField = new JTextField(8);
@@ -228,7 +226,6 @@ public class LibraryGUI extends JFrame implements WindowListener {
         return mainPanel;
     }
 
-
     private void refreshTable() {
         tableModel.setRowCount(0);
         for (Item item : library.getAllItems()) {
@@ -257,13 +254,24 @@ public class LibraryGUI extends JFrame implements WindowListener {
         library.saveToFile();
         dispose();
     }
-    
-    public void windowOpened(WindowEvent e) {}
-    public void windowClosed(WindowEvent e) {}
-    public void windowIconified(WindowEvent e) {}
-    public void windowDeiconified(WindowEvent e) {}
-    public void windowActivated(WindowEvent e) {}
-    public void windowDeactivated(WindowEvent e) {}
+
+    public void windowOpened(WindowEvent e) {
+    }
+
+    public void windowClosed(WindowEvent e) {
+    }
+
+    public void windowIconified(WindowEvent e) {
+    }
+
+    public void windowDeiconified(WindowEvent e) {
+    }
+
+    public void windowActivated(WindowEvent e) {
+    }
+
+    public void windowDeactivated(WindowEvent e) {
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

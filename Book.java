@@ -36,7 +36,8 @@ public class Book extends Item {
 
     @Override
     public String toString() {
-        return "Book: " + title + ", category: " + category + " by " + author + ", Available: " + quantity + "/" + capacity;
+        return "Book: " + title + ", category: " + category + " by " + author + ", Available: " + quantity + "/"
+                + capacity;
     }
 
     @Override

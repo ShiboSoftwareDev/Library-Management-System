@@ -36,7 +36,8 @@ public class CD extends Item {
 
     @Override
     public String toString() {
-        return "CD: " + title + ", company: " + company + ", duration: " + duration + " mins, Available: " + quantity + "/" + capacity;
+        return "CD: " + title + ", company: " + company + ", duration: " + duration + " mins, Available: " + quantity
+                + "/" + capacity;
     }
 
     @Override

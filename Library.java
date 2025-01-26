@@ -8,27 +8,25 @@ public class Library {
         items = FileHandler.loadItems();
     }
 
-
-
     private boolean hasConflictingName(Item newItem) {
         String newTitle = newItem.getTitle();
         String newIdentifier = "";
-        
+
         if (newItem instanceof Book) {
-            newIdentifier = ((Book)newItem).getAuthor();
+            newIdentifier = ((Book) newItem).getAuthor();
         } else if (newItem instanceof CD) {
-            newIdentifier = ((CD)newItem).getCompany();
+            newIdentifier = ((CD) newItem).getCompany();
         }
 
         for (Item existingItem : items) {
-            if (!existingItem.getClass().equals(newItem.getClass()) && 
-                existingItem.getTitle().equalsIgnoreCase(newTitle)) {
+            if (!existingItem.getClass().equals(newItem.getClass()) &&
+                    existingItem.getTitle().equalsIgnoreCase(newTitle)) {
                 if (existingItem instanceof Book) {
-                    if (((Book)existingItem).getAuthor().equalsIgnoreCase(newIdentifier)) {
+                    if (((Book) existingItem).getAuthor().equalsIgnoreCase(newIdentifier)) {
                         return true;
                     }
                 } else if (existingItem instanceof CD) {
-                    if (((CD)existingItem).getCompany().equalsIgnoreCase(newIdentifier)) {
+                    if (((CD) existingItem).getCompany().equalsIgnoreCase(newIdentifier)) {
                         return true;
                     }
                 }
@@ -39,7 +37,7 @@ public class Library {
 
     public void addItem(Item item) {
         String message = "";
-        
+
         if (hasConflictingName(item)) {
             message = "Cannot add item - an item of different type with same name and author/company already exists";
         } else {
@@ -79,14 +77,13 @@ public class Library {
                 }
             }
         }
-        
+
         if (message.startsWith("Cannot")) {
             JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null, message, "Success", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-
 
     public Item findItem(String title) {
         for (Item item : items) {
@@ -110,7 +107,7 @@ public class Library {
     public void removeItem(String title, String identifier) {
         List<Item> foundItems = findAllItems(title);
         boolean itemRemoved = false;
-        
+
         for (Item item : foundItems) {
             if (item instanceof Book) {
                 Book book = (Book) item;
@@ -126,7 +123,7 @@ public class Library {
                 }
             }
         }
-        
+
         if (!itemRemoved) {
         }
     }
@@ -163,7 +160,7 @@ public class Library {
                 }
             }
         }
-        
+
         if (!itemBorrowed && message.isEmpty()) {
             message = "Item not found";
         }
@@ -209,7 +206,7 @@ public class Library {
                 }
             }
         }
-        
+
         if (!itemReturned && message.isEmpty()) {
             message = "Item not found";
         }

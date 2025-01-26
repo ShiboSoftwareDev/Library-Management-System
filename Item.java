@@ -24,5 +24,6 @@ public abstract class Item {
     }
 
     public abstract String toCsvString();
+
     public abstract String toString();
 }
