@@ -43,4 +43,9 @@ public class CD extends Item {
     public String toCsvString() {
         return "CD," + title + "," + company + "," + duration + "," + quantity + "," + capacity;
     }
+
+    public boolean isSameCD(CD other) {
+        return this.getTitle().equalsIgnoreCase(other.getTitle())
+                && this.getCompany().equalsIgnoreCase(other.getCompany());
+    }
 }

@@ -44,4 +44,10 @@ public class Book extends Item {
         return "BOOK," + title + "," + category + "," + author + "," + quantity + "," + capacity;
     }
 
+    public boolean isSameBook(Book other) {
+        return this.getTitle().equalsIgnoreCase(other.getTitle())
+                && this.getAuthor().equalsIgnoreCase(other.getAuthor())
+                && this.getCategory().equalsIgnoreCase(other.getCategory());
+    }
+
 }

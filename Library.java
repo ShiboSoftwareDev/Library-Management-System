@@ -7,10 +7,6 @@ public class Library {
         items = FileHandler.loadItems();
     }
 
-    private boolean isSameCD(CD cd1, CD cd2) {
-        return cd1.getTitle().equalsIgnoreCase(cd2.getTitle())
-                && cd1.getCompany().equalsIgnoreCase(cd2.getCompany());
-    }
 
 
     public void addItem(Item item) {
@@ -19,7 +15,7 @@ public class Library {
             for (Item existingItem : items) {
                 if (existingItem instanceof Book) {
                     Book existingBook = (Book) existingItem;
-                    if (isSameBook(existingBook, newBook)) {
+                    if (existingBook.isSameBook(newBook)) {
                         existingBook.setQuantity(existingBook.getQuantity() + newBook.getQuantity());
                         existingBook.setCapacity(existingBook.getCapacity() + newBook.getQuantity());
                         return;
@@ -31,7 +27,7 @@ public class Library {
             for (Item existingItem : items) {
                 if (existingItem instanceof CD) {
                     CD existingCD = (CD) existingItem;
-                    if (isSameCD(existingCD, newCD)) {
+                    if (existingCD.isSameCD(newCD)) {
                         existingCD.setQuantity(existingCD.getQuantity() + newCD.getQuantity());
                         existingCD.setCapacity(existingCD.getCapacity() + newCD.getQuantity());
                         return;
@@ -42,11 +38,6 @@ public class Library {
         items.add(item);
     }
 
-    private boolean isSameBook(Book book1, Book book2) {
-        return book1.getTitle().equalsIgnoreCase(book2.getTitle())
-                && book1.getAuthor().equalsIgnoreCase(book2.getAuthor())
-                && book1.getCategory().equalsIgnoreCase(book2.getCategory());
-    }
 
     public Item findItem(String title) {
         for (Item item : items) {
@@ -57,24 +48,41 @@ public class Library {
         return null;
     }
 
-    public void removeItem(String title, String identifier) {
-        Item item = findItem(title);
-        if (item instanceof Book) {
-            Book book = (Book) item;
-            if (book.getAuthor().equalsIgnoreCase(identifier)) {
-                items.remove(book);
-                System.out.println("Book removed successfully");
-                return;
-            }
-        } else if (item instanceof CD) {
-            CD cd = (CD) item;
-            if (cd.getCompany().equalsIgnoreCase(identifier)) {
-                items.remove(cd);
-                System.out.println("CD removed successfully");
-                return;
+    public List<Item> findAllItems(String title) {
+        List<Item> foundItems = new ArrayList<>();
+        for (Item item : items) {
+            if (item.getTitle().equalsIgnoreCase(title)) {
+                foundItems.add(item);
             }
         }
-        System.out.println("Item not found");
+        return foundItems;
+    }
+
+    public void removeItem(String title, String identifier) {
+        List<Item> foundItems = findAllItems(title);
+        boolean itemRemoved = false;
+        
+        for (Item item : foundItems) {
+            if (item instanceof Book) {
+                Book book = (Book) item;
+                if (book.getAuthor().equalsIgnoreCase(identifier)) {
+                    items.remove(book);
+                    System.out.println("Book removed successfully");
+                    itemRemoved = true;
+                }
+            } else if (item instanceof CD) {
+                CD cd = (CD) item;
+                if (cd.getCompany().equalsIgnoreCase(identifier)) {
+                    items.remove(cd);
+                    System.out.println("CD removed successfully");
+                    itemRemoved = true;
+                }
+            }
+        }
+        
+        if (!itemRemoved) {
+            System.out.println("Item not found");
+        }
     }
 
     public void borrowItem(String title) {
