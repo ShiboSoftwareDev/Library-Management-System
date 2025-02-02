@@ -129,14 +129,65 @@ public class LibraryGUI extends JFrame implements WindowListener {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createTitledBorder("Library Items"));
 
+        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        JTextField filterTitleField = new JTextField(10);
+        JTextField filterIdentifierField = new JTextField(10);
+        JButton filterButton = new JButton("Filter");
+        JButton clearButton = new JButton("Clear");
+
+        filterPanel.add(new JLabel("Title:"));
+        filterPanel.add(filterTitleField);
+        filterPanel.add(new JLabel("Author/Company:"));
+        filterPanel.add(filterIdentifierField);
+        filterPanel.add(filterButton);
+        filterPanel.add(clearButton);
+
         String[] columns = { "Type", "Title", "Details", "Status" };
         tableModel = new DefaultTableModel(columns, 0);
-        ((DefaultTableModel) tableModel).setColumnCount(columns.length);
-
         itemsTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(itemsTable);
 
+        filterPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 20, 5));
+
+        panel.add(filterPanel, BorderLayout.NORTH);
         panel.add(scrollPane, BorderLayout.CENTER);
+
+        filterButton.addActionListener(_ -> {
+            String filterTitle = filterTitleField.getText().trim();
+            String filterIdentifier = filterIdentifierField.getText().trim();
+
+            tableModel.setRowCount(0);
+
+            for (Item item : library.getItems(filterTitle, filterIdentifier)) {
+                if (item instanceof Book) {
+                    Book book = (Book) item;
+                    tableModel.addRow(new Object[] {
+                            "Book",
+                            book.getTitle(),
+                            "Author: " + book.getAuthor() +
+                                    ", Category: " + book.getCategory(),
+                            "Available: " + book.getQuantity() + "/" +
+                                    book.getCapacity()
+                    });
+                } else if (item instanceof CD) {
+                    CD cd = (CD) item;
+                    tableModel.addRow(new Object[] {
+                            "CD",
+                            cd.getTitle(),
+                            "Company: " + cd.getCompany() +
+                                    ", Duration: " + cd.getDuration() + " mins",
+                            "Available: " + cd.getQuantity() + "/" +
+                                    cd.getCapacity()
+                    });
+                }
+            }
+        });
+
+        clearButton.addActionListener(_ -> {
+            filterTitleField.setText("");
+            filterIdentifierField.setText("");
+            refreshTable();
+        });
 
         JPanel deletePanel = new JPanel(new GridLayout(2, 1, 5, 5));
 
@@ -156,18 +207,28 @@ public class LibraryGUI extends JFrame implements WindowListener {
         deleteItemPanel.add(deleteTitleField);
         deleteItemPanel.add(new JLabel("Author/Company:"));
         deleteItemPanel.add(deleteIdentifierField);
-        deleteItemPanel.add(deleteItemButton, BorderLayout.EAST);
+        deleteItemPanel.add(deleteItemButton);
 
         JPanel deleteAllPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton deleteAllButton = new JButton("Delete All Items");
         deleteAllButton.setMargin(new Insets(5, 10, 5, 10));
-        deleteAllPanel.add(deleteAllButton);
 
+        deleteAllButton.addActionListener(_ -> {
+            int confirm = JOptionPane.showConfirmDialog(deleteAllPanel,
+                    "Are you sure you want to delete all items?",
+                    "Confirm Deletion",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                library.removeAllItems();
+                refreshTable();
+            }
+        });
+
+        deleteAllPanel.add(deleteAllButton);
         deletePanel.add(deleteItemPanel);
         deletePanel.add(deleteAllPanel);
 
         panel.add(deletePanel, BorderLayout.SOUTH);
-
         return panel;
     }
 

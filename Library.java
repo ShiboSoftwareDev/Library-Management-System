@@ -266,4 +266,35 @@ public class Library {
     public List<Item> getAllItems() {
         return new ArrayList<>(items);
     }
+
+    public List<Item> getItems(String title, String identifier) {
+        List<Item> result = new ArrayList<>();
+        String titleFilter = title == null ? "" : title.trim().toLowerCase();
+        String idFilter = identifier == null ? "" : identifier.trim().toLowerCase();
+
+        for (Item item : items) {
+            boolean titleMatches = titleFilter.isEmpty() ||
+                    item.getTitle().toLowerCase().contains(titleFilter);
+            boolean identifierMatches = false;
+
+            if (item instanceof Book) {
+                Book book = (Book) item;
+                identifierMatches = idFilter.isEmpty() ||
+                        book.getAuthor().toLowerCase().contains(idFilter);
+            } else if (item instanceof CD) {
+                CD cd = (CD) item;
+                identifierMatches = idFilter.isEmpty() ||
+                        cd.getCompany().toLowerCase().contains(idFilter);
+            }
+
+            if (titleMatches && identifierMatches) {
+                result.add(item);
+            }
+        }
+        return result;
+    }
+
+    public void removeAllItems() {
+        items.clear();
+    }
 }
